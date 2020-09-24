@@ -1,6 +1,6 @@
 <div class="container form-group" style="margin: 10px;">
     <h2>Create todo</h2>
-    <form (ngSubmit)="createToDo()">
+    <form>
         <div class="row">
             <div class="form-group col-md-4">
                 <input [(ngModel)]="title" placeholder="Enter the title" class="form-control" name="title"
@@ -11,7 +11,7 @@
                     style="min-width: 150px;" />
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-primary">
+                <button class="btn btn-primary" (click)="createToDo()">
                     ADD
                 </button>
             </div>
@@ -29,16 +29,21 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="col-md-4">Title</th>
-                <th class="col-md-4">Detail</th>
-                <th class="col-md-4">Date</th>
+                <th>Title</th>
+                <th>Detail</th>
+                <th>Date</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let todo of toDoList">
+            <tr *ngFor="let todo of toDoList; let i = index;" (click)="selectRow(todo)">
                 <td>{{ todo.title }}</td>
                 <td>{{ todo.detail }}</td>
                 <td>{{ todo.date }}</td>
+                <td>
+                    <button class="btn btn-primary" (click)="updateToDo(i)">EDIT</button>
+                    <button class="btn btn-primary" style="margin-left: 10px;" (click)="deleteToDo(i)">DELETE</button>
+                </td>
             </tr>
         </tbody>
     </table>

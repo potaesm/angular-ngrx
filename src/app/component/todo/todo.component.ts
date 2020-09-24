@@ -9,7 +9,7 @@ import ToDoState from '../../_store/state/todo.state';
 @Component({
   selector: 'app-todo',
   templateUrl: './todo.component.html',
-  styleUrls: ['./todo.component.scss']
+  styleUrls: ['./todo.component.scss'],
 })
 export class TodoComponent implements OnInit, OnDestroy {
   constructor(private store: Store<{ todos: ToDoState }>) {
@@ -23,9 +23,9 @@ export class TodoComponent implements OnInit, OnDestroy {
 
   title: string;
   detail: string;
-  date: Date = new Date();
 
   ngOnInit(): void {
+    this.store.dispatch(ToDoActions.BeginGetToDoAction());
     this.toDoSubscription = this.todo$
       .pipe(
         map((state) => {
@@ -34,16 +34,43 @@ export class TodoComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe();
+  }
 
-    this.store.dispatch(ToDoActions.BeginGetToDoAction());
+  selectRow(todo: ToDo): void {
+    this.title = todo.title;
+    this.detail = todo.detail;
   }
 
   createToDo(): void {
-    const todo: ToDo = { title: this.title, detail: this.detail, date: this.date };
+    const currentDate = new Date();
+    const todo: ToDo = {
+      title: this.title,
+      detail: this.detail,
+      date: currentDate.toISOString(),
+    };
     this.store.dispatch(ToDoActions.BeginCreateToDoAction({ payload: todo }));
     this.title = '';
     this.detail = '';
-    this.date = new Date();
+  }
+
+  updateToDo(i: number): void {
+    const currentDate = new Date();
+    const todo: ToDo = {
+      title: this.title,
+      detail: this.detail,
+      date: currentDate.toISOString(),
+    };
+    this.store.dispatch(
+      ToDoActions.BeginUpdateToDoAction({ id: i, payload: todo })
+    );
+    this.title = '';
+    this.detail = '';
+  }
+
+  deleteToDo(i: number): void {
+    this.store.dispatch(ToDoActions.BeginDeleteToDoAction({ id: i }));
+    this.title = '';
+    this.detail = '';
   }
 
   ngOnDestroy(): void {
